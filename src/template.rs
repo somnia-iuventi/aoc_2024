@@ -4,8 +4,8 @@ pub fn run(part: u8) {
     let file = File::open("src/inputs/1.txt").unwrap();
     let mut reader = BufReader::new(file);
     match part {
-        1 => part1(reader),
-        2 => part2(reader),
+        1 => dbg!(part1(reader)),
+        2 => dbg!(part2(reader)),
         _ => return,
     };
 }
