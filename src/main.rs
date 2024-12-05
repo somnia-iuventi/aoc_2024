@@ -1,6 +1,7 @@
 use clap::Parser;
 mod day1;
 mod day2;
+mod day3;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -17,7 +18,7 @@ fn main() {
     let day = match &cli.day {
         1 => day1::run(cli.part),
         2 => day2::run(cli.part),
-        // 3 => {}
+        3 => day3::run(cli.part),
         // 4 => {}
         // 5 => {}
         // 6 => {}
