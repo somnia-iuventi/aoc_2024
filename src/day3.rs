@@ -15,10 +15,12 @@ use nom::{
 
 pub fn run(part: u8) {
     let file = File::open("src/inputs/3.txt").unwrap();
-    let reader = BufReader::new(file);
+    let mut reader = BufReader::new(file);
+    let mut whole_file = String::new();
+    reader.read_to_string(&mut whole_file).unwrap();
     match part {
-        1 => dbg!(part1(reader)),
-        2 => dbg!(part2(reader)),
+        1 => dbg!(part1(whole_file)),
+        2 => dbg!(part2(whole_file)),
         _ => return,
     };
 }
@@ -46,10 +48,8 @@ fn parse(input: &str) -> IResult<&str, Vec<Command>> {
     Ok((rest, answer.into_iter().map(|x| x.1).collect()))
 }
 
-pub fn part1(mut file: BufReader<File>) -> usize {
-    let mut whole_file = String::new();
-    file.read_to_string(&mut whole_file).unwrap();
-    let (_, parsed) = parse(whole_file.as_str()).unwrap();
+pub fn part1(file: String) -> usize {
+    let (_, parsed) = parse(file.as_str()).unwrap();
     parsed
         .iter()
         .filter_map(|x| match x {
@@ -58,12 +58,10 @@ pub fn part1(mut file: BufReader<File>) -> usize {
         })
         .sum()
 }
-pub fn part2(mut file: BufReader<File>) -> usize {
-    let mut whole_file = String::new();
+pub fn part2(file: String) -> usize {
     let mut counting = true;
     let mut answer = 0;
-    file.read_to_string(&mut whole_file).unwrap();
-    let (_, parsed) = parse(whole_file.as_str()).unwrap();
+    let (_, parsed) = parse(file.as_str()).unwrap();
     parsed.iter().for_each(|x| match x {
         Command::Multiply(a, b) => {
             if counting {
@@ -83,16 +81,14 @@ pub fn part2(mut file: BufReader<File>) -> usize {
 #[cfg(test)]
 mod test {
     use super::*;
+    const TEST: &str = "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))";
+    const TEST2: &str = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))";
     #[test]
     fn part1_works() {
-        let file = File::open("src/testinputs/3.txt").unwrap();
-        let reader = BufReader::new(file);
-        assert_eq!(part1(reader), 161)
+        assert_eq!(part1(TEST.to_owned()), 161)
     }
     #[test]
     fn part2_works() {
-        let file = File::open("src/testinputs/3-2.txt").unwrap();
-        let reader = BufReader::new(file);
-        assert_eq!(part2(reader), 48)
+        assert_eq!(part2(TEST2.to_owned()), 48)
     }
 }

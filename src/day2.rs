@@ -1,6 +1,6 @@
 use std::{
     fs::File,
-    io::{BufRead, BufReader},
+    io::{BufReader, Read},
 };
 
 use itertools::Itertools;
@@ -12,10 +12,12 @@ use nom::{
 
 pub fn run(part: u8) {
     let file = File::open("src/inputs/2.txt").unwrap();
-    let reader = BufReader::new(file);
+    let mut reader = BufReader::new(file);
+    let mut whole_file = String::new();
+    reader.read_to_string(&mut whole_file).unwrap();
     match part {
-        1 => dbg!(part1(reader)),
-        2 => dbg!(part2(reader)),
+        1 => dbg!(part1(whole_file)),
+        2 => dbg!(part2(whole_file)),
         _ => return,
     };
 }
@@ -48,18 +50,16 @@ fn safe_report_p2(single_report: &Vec<i64>) -> bool {
     false
 }
 
-pub fn part1(file: BufReader<File>) -> usize {
+pub fn part1(file: String) -> usize {
     file.lines()
-        .filter_map(|x| x.ok())
-        .map(|x| parse_line(x.as_str()).unwrap().1)
+        .map(|x| parse_line(x).unwrap().1)
         .map(|x| safe_report(&x))
         .filter(|x| *x == true)
         .count()
 }
-pub fn part2(file: BufReader<File>) -> usize {
+pub fn part2(file: String) -> usize {
     file.lines()
-        .filter_map(|x| x.ok())
-        .map(|x| parse_line(x.as_str()).unwrap().1)
+        .map(|x| parse_line(x).unwrap().1)
         .map(|x| safe_report_p2(&x))
         .filter(|x| *x == true)
         .count()
@@ -68,16 +68,18 @@ pub fn part2(file: BufReader<File>) -> usize {
 #[cfg(test)]
 mod test {
     use super::*;
+    const TEST: &str = r#"7 6 4 2 1
+1 2 7 8 9
+9 7 6 2 1
+1 3 2 4 5
+8 6 4 4 1
+1 3 6 7 9"#;
     #[test]
     fn part1_works() {
-        let file = File::open("src/testinputs/2.txt").unwrap();
-        let reader = BufReader::new(file);
-        assert_eq!(part1(reader), 2)
+        assert_eq!(part1(TEST.to_owned()), 2)
     }
     #[test]
     fn part2_works() {
-        let file = File::open("src/testinputs/2.txt").unwrap();
-        let reader = BufReader::new(file);
-        assert_eq!(part2(reader), 4)
+        assert_eq!(part2(TEST.to_owned()), 4)
     }
 }

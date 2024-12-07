@@ -8,10 +8,12 @@ use glam::IVec2;
 
 pub fn run(part: u8) {
     let file = File::open("src/inputs/4.txt").unwrap();
-    let reader = BufReader::new(file);
+    let mut reader = BufReader::new(file);
+    let mut whole_file = String::new();
+    reader.read_to_string(&mut whole_file).unwrap();
     match part {
-        1 => dbg!(part1(reader)),
-        2 => dbg!(part2(reader)),
+        1 => dbg!(part1(whole_file)),
+        2 => dbg!(part2(whole_file)),
         _ => return,
     };
 }
@@ -62,10 +64,8 @@ fn check_matches_p2(starting_point: &IVec2, locations: &HashMap<IVec2, char>) ->
         == 2
 }
 
-pub fn part1(mut file: BufReader<File>) -> usize {
-    let mut whole_file = String::new();
-    file.read_to_string(&mut whole_file).unwrap();
-    let locations = whole_file
+pub fn part1(file: String) -> usize {
+    let locations = file
         .lines()
         .enumerate()
         .flat_map(|(y, text)| {
@@ -80,10 +80,8 @@ pub fn part1(mut file: BufReader<File>) -> usize {
         .map(|(location, _)| check_matches(location, &locations))
         .sum()
 }
-pub fn part2(mut file: BufReader<File>) -> usize {
-    let mut whole_file = String::new();
-    file.read_to_string(&mut whole_file).unwrap();
-    let locations = whole_file
+pub fn part2(file: String) -> usize {
+    let locations = file
         .lines()
         .enumerate()
         .flat_map(|(y, text)| {
@@ -103,16 +101,33 @@ pub fn part2(mut file: BufReader<File>) -> usize {
 #[cfg(test)]
 mod test {
     use super::*;
+    const TEST: &str = r#"MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX"#;
+
+    const TEST2: &str = r#".M.S......
+..A..MSMS.
+.M.S.MAA..
+..A.ASMSM.
+.M.S.M....
+..........
+S.S.S.S.S.
+.A.A.A.A..
+M.M.M.M.M.
+.........."#;
     #[test]
     fn part1_works() {
-        let file = File::open("src/testinputs/4.txt").unwrap();
-        let reader = BufReader::new(file);
-        assert_eq!(part1(reader), 18)
+        assert_eq!(part1(TEST.to_owned()), 18)
     }
     #[test]
     fn part2_works() {
-        let file = File::open("src/testinputs/4-2.txt").unwrap();
-        let reader = BufReader::new(file);
-        assert_eq!(part2(reader), 9)
+        assert_eq!(part2(TEST2.to_owned()), 9)
     }
 }
