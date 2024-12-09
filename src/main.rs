@@ -5,6 +5,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -25,25 +26,7 @@ fn main() {
         4 => day4::run(cli.part),
         5 => day5::run(cli.part),
         6 => day6::run(cli.part),
-        // 7 => {}
-        // 8 => {}
-        // 9 => {}
-        // 10 => {}
-        // 11 => {}
-        // 12 => {}
-        // 13 => {}
-        // 14 => {}
-        // 15 => {}
-        // 16 => {}
-        // 17 => {}
-        // 18 => {}
-        // 19 => {}
-        // 20 => {}
-        // 21 => {}
-        // 22 => {}
-        // 23 => {}
-        // 24 => {}
-        // 25 => {}
+        7 => day7::run(cli.part),
         _ => return,
     };
 }
