@@ -1,10 +1,13 @@
-use std::{fs::File, io::BufReader};
+use std::{
+    fs::File,
+    io::{BufReader, Read},
+};
 
 pub fn run(part: u8) {
     let file = File::open("src/inputs/1.txt").unwrap();
     let mut reader = BufReader::new(file);
     let mut whole_file = String::new();
-    reader.read_to_string(whole_file).unwrap();
+    reader.read_to_string(&mut whole_file).unwrap();
     match part {
         1 => dbg!(part1(whole_file)),
         2 => dbg!(part2(whole_file)),
