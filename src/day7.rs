@@ -8,7 +8,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::{self, newline, space1},
     combinator::opt,
-    multi::{fold_many1, many1, separated_list1},
+    multi::{fold_many1, many1},
     sequence::{preceded, separated_pair, terminated},
     IResult,
 };
