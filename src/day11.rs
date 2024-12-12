@@ -18,7 +18,7 @@ pub fn run(part: u8) {
     reader.read_to_string(&mut whole_file).unwrap();
     match part {
         1 => dbg!(part1(whole_file)),
-        // 2 => dbg!(part2(whole_file)),
+        2 => dbg!(part2(whole_file)),
         _ => return,
     };
 }
@@ -27,7 +27,7 @@ fn parse_input(input: &str) -> IResult<&str, Vec<u64>> {
     separated_list1(space1, complete::u64)(input)
 }
 
-fn apply_rules(num: u64, depth: u64, max_depth: u64) -> Vec<u64> {
+fn apply_rules(num: u64, depth: u64, blinks: u64) -> Vec<u64> {
     let num_string = num.to_string();
     let results = if num == 0 {
         vec![1]
@@ -38,34 +38,30 @@ fn apply_rules(num: u64, depth: u64, max_depth: u64) -> Vec<u64> {
     } else {
         vec![num * 2024]
     };
-    if depth == 75 {
+    if depth + 1 == blinks {
         return results;
     }
     return results
-        // .par_iter()
-        .iter()
-        .flat_map(|x| apply_rules(*x, depth + 1, max_depth))
+        .par_iter()
+        // .iter()
+        .flat_map(|x| apply_rules(*x, depth + 1, blinks))
         .collect::<Vec<u64>>();
 }
 
 pub fn part1(file: String) -> usize {
-    let (_, mut numbers) = parse_input(file.as_str()).unwrap();
-    numbers = numbers
+    let (_, numbers) = parse_input(file.as_str()).unwrap();
+    numbers
         .par_iter()
         .flat_map(|x| apply_rules(*x, 0, 25))
-        .collect::<Vec<u64>>();
-    numbers.len()
+        .count()
 }
-// pub fn part2(file: String) -> usize {
-//     let (_, mut numbers) = parse_input(file.as_str()).unwrap();
-//     (0..75).into_iter().for_each(|_| {
-//         numbers = numbers
-//             .par_iter()
-//             .flat_map(|x| apply_rules_p1(*x))
-//             .collect::<Vec<u64>>();
-//     });
-//     numbers.len()
-// }
+pub fn part2(file: String) -> usize {
+    let (_, numbers) = parse_input(file.as_str()).unwrap();
+    numbers
+        .par_iter()
+        .flat_map(|x| apply_rules(*x, 0, 75))
+        .count()
+}
 
 #[cfg(test)]
 mod test {
